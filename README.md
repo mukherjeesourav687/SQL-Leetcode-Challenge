@@ -13,7 +13,6 @@ Built to sharpen SQL fundamentals beyond basic SELECT/JOIN syntax — window fun
 ├── Hard/
 └── README.md
 
-
 Each file contains:
 - The problem statement (as a comment)
 - Table schema
