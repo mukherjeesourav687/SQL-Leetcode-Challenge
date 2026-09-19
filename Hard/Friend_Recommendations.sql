@@ -1,3 +1,22 @@
+create database leetcodify;
+
+use leetcodify;
+
+create table listens (
+    user_id int,
+    song_id int,
+    day date
+);
+
+create table friendship (
+    user1_id int,
+    user2_id int
+);
+
+-- insert sample data here
+
+-- solution
+
 with unique_listens as (
     select distinct user_id, song_id, day
     from listens
