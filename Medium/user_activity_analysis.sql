@@ -1,14 +1,48 @@
--- Problem: Find users who have both free_trial and paid activity
+create database leetcodify;
 
--- Approach:
--- Group by user_id
--- Count occurrences of each activity type
--- Use HAVING to filter users having both activities
+use leetcodify;
 
-SELECT user_id
-FROM activity
-GROUP BY user_id
-HAVING 
-SUM(CASE WHEN activity_type = 'free_trial' THEN 1 ELSE 0 END) > 0
-AND
-SUM(CASE WHEN activity_type = 'paid' THEN 1 ELSE 0 END) > 0;
+create table listens (
+    user_id int,
+    song_id int,
+    day date
+);
+
+create table friendship (
+    user1_id int,
+    user2_id int
+);
+
+-- insert sample data here
+
+-- solution
+
+with unique_listens as (
+    select distinct user_id, song_id, day
+    from listens
+),
+
+friends as (
+    select l1.user_id, l2.user_id recommended_id
+    from unique_listens l1
+    join unique_listens l2
+        on l1.user_id < l2.user_id
+        and l1.song_id = l2.song_id
+        and l1.day = l2.day
+    where not exists (
+        select 1
+        from friendship f
+        where (f.user1_id = l1.user_id and f.user2_id = l2.user_id)
+           or (f.user1_id = l2.user_id and f.user2_id = l1.user_id)
+    )
+    group by l1.user_id, l2.user_id, l1.day
+    having count(*) >= 3
+)
+
+select user_id, recommended_id
+from friends
+
+union
+
+select recommended_id, user_id
+from friends;
